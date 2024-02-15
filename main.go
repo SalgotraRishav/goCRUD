@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 // task represent a to-do task.
@@ -28,5 +31,26 @@ func taskHandler() {
 }
 
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
+
+	switch r.Method {
+	case "GET":
+		json.NewEncoder(w).Encode(tasks)
+	case "POST":
+		var task Task
+		if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// go get  github.com/google/uuid
+
+		task.ID = uuid.New().String()
+		tasks = append(tasks, task)
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(tasks)
+
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 
 }
