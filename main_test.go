@@ -13,6 +13,7 @@ func TestTasksHandler(t *testing.T) {
 	resp, err := http.Get(server.URL)
 	statusCode := resp.StatusCode
 
+	// Printing messages on the terminal
 	fmt.Println("The status code received is ", statusCode)
 	fmt.Println("The value of err is ", err)
 
